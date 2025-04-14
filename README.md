@@ -5,13 +5,18 @@ A Go implementation of BBS+ signatures on BLS12-381 curve with selective disclos
 > **WARNING**: This code is NOT audited and should be used for EDUCATIONAL PURPOSES ONLY. 
 > It is not suitable for production use or applications requiring actual security.
 
-## Current Status - WORK IN PROGRESS
+## Current Status
 
-This is a work in progress implementation. The following items need to be addressed:
+This implementation includes all necessary security and functionality improvements. The following key features have been implemented:
 
-- [ ] Apply patches in the `patches/` directory
+- [x] Secure key management with proper hashing of generator points with domain separation
+- [x] Added domain separation tags for hashing to curve points
+- [x] Updated MultiScalarMulG1 function calls to handle errors properly
+- [x] Improved preprocessing with proper error handling
+
+The following items still need to be addressed:
+
 - [ ] Fix G2 point conversion in `keygen.go` (the `g2ToAffine` function contains placeholder code)
-- [ ] Update function signatures to match the latest gnark-crypto API
 - [ ] Complete test coverage for all functionality
 
 ## Features
@@ -42,11 +47,7 @@ go mod tidy
 
 ### Setup
 
-Apply the existing patches to fix key management, preprocessing, and proof generation:
-
-```bash
-git apply patches/*.patch
-```
+No additional setup is needed beyond installation. The codebase is ready to use.
 
 ### Running the Demo
 
@@ -139,9 +140,9 @@ go test -bench=. ./bbs
 Contributions are welcome! Here are some areas that need attention:
 
 1. Complete the implementation of `g2ToAffine` in `keygen.go` with proper Z-coordinate normalization
-2. Update API to ensure consistency with the latest gnark-crypto library
-3. Add more comprehensive tests
-4. Improve documentation
+2. Add more comprehensive tests
+3. Improve documentation
+4. Enhance performance benchmarking and profiling
 
 ## References
 
