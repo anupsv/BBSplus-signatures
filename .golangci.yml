@@ -1,0 +1,56 @@
+linters:
+  enable:
+    - gofmt
+    - goimports
+    - gosimple
+    - govet
+    - ineffassign
+    - misspell
+    - staticcheck
+    - typecheck
+    - unused
+    - errcheck
+    - gosec
+    - bodyclose
+    - revive
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - funlen
+        - dupl
+        - gosec
+
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 20
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  misspell:
+    locale: US
+  revive:
+    rules:
+      - name: exported
+        arguments:
+          - disableStutteringCheck
+  funlen:
+    lines: 100
+    statements: 50
+
+run:
+  timeout: 5m
+  go: '1.23'
+  tests: true
+  skip-dirs:
+    - vendor/
