@@ -1,0 +1,37 @@
+# Binary files
+bbs
+bbs_check
+
+# Backup files
+*.bak
+*.bak?
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# IDE files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Generated files
+perf_reports/
+*.html
+*.json
+*.csv
+*.log
+*.out
+*.prof
+coverage.out
+benchmarks.json
