@@ -49,6 +49,17 @@ go mod tidy
 
 No additional setup is needed beyond installation. The codebase is ready to use.
 
+### Project Structure
+
+The project is organized as follows:
+
+- `bbs/` - Main library package with the core implementation
+- `bbs/perf/` - Performance benchmarking tools
+- `bin/` - Compiled binaries
+- `examples/` - Example applications showing usage of the library
+- `tools/` - Additional utilities and test programs
+- `vendor/` - Vendored dependencies
+
 ### Running the Demo
 
 ```bash
