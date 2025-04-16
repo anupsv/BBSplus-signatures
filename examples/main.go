@@ -52,22 +52,17 @@ func run_bbs_demo() {
 	// Verify the signature
 	fmt.Println("\nVerifying signature...")
 	
-	// Debug information - print key information
-	fmt.Println("Debug: Signature components:")
+	// Display signature components
+	fmt.Println("Signature components:")
 	fmt.Printf("A: %s\n", signature.A.String()[:50]+"...")
 	fmt.Printf("E: %s\n", signature.E.String())
 	fmt.Printf("S: %s\n", signature.S.String())
 	
 	err = bbs.Verify(keyPair.PublicKey, signature, messages, nil)
 	if err != nil {
-		fmt.Printf("Verification failed with error: %v\n", err)
-		
-		// Since our implementation might have issues, let's continue the demo
-		// instead of fatal error for demonstration purposes
-		fmt.Println("Continuing demo despite verification failure...")
-	} else {
-		fmt.Println("Signature verified successfully!")
+		log.Fatalf("Verification failed with error: %v", err)
 	}
+	fmt.Println("✅ Signature verified successfully!")
 	
 	// Create a selective disclosure proof
 	// Let's disclose only messages 0 and 2 (Name and Address)
@@ -89,34 +84,54 @@ func run_bbs_demo() {
 	// Verify the proof
 	fmt.Println("\nVerifying selective disclosure proof...")
 	
-	// Debug information
-	fmt.Println("Debug: Proof components:")
+	// Display proof components
+	fmt.Println("Proof components:")
 	fmt.Printf("APrime: %s\n", proof.APrime.String()[:50]+"...")
 	fmt.Printf("ABar: %s\n", proof.ABar.String()[:50]+"...")
 	fmt.Printf("D: %s\n", proof.D.String()[:50]+"...")
 	
 	err = bbs.VerifyProof(keyPair.PublicKey, proof, disclosedMsgs, nil)
 	if err != nil {
-		fmt.Printf("Proof verification failed with error: %v\n", err)
-		
-		// Since our implementation might have issues, let's continue the demo
-		// instead of fatal error for demonstration purposes
-		fmt.Println("Continuing demo despite verification failure...")
-	} else {
-		fmt.Println("Proof verified successfully!")
+		log.Fatalf("Proof verification failed with error: %v", err)
 	}
+	fmt.Println("✅ Proof verified successfully!")
 	
 	// Print which messages were disclosed
 	fmt.Println("\nDisclosed messages:")
-	for idx, msgVal := range disclosedMsgs {
+	for i, idx := range disclosedIndices {
 		originalMsg := messageStrings[idx]
+		disclosedIdx := i // Map from disclosedIndices index to disclosedMsgs index
+		msgVal := disclosedMsgs[disclosedIdx]
 		fmt.Printf("Message %d: %s -> %s...\n", idx+1, originalMsg, msgVal.String()[:20])
 	}
 	
-	// Since we've made changes to the cryptography implementation and may have issues,
-	// we'll skip the invalid scenario testing in this demo version to focus on core functionality.
-	fmt.Println("\nDemo completed!")
-	fmt.Println("Note: Verification failures are likely due to our custom implementation of MultiScalarMulG1")
+	// Test negative case: try to verify with tampered message
+	fmt.Println("\n🧪 Testing tampered message rejection:")
+	// Make a copy of the disclosed messages with one being tampered
+	tamperedMsgs := make(map[int]*big.Int)
+	i := 0
+	for _, idx := range disclosedIndices {
+		if i == 0 {
+			// Tamper the first disclosed message
+			tamperedMsgs[i] = big.NewInt(12345)
+		} else {
+			tamperedMsgs[i] = disclosedMsgs[i]
+		}
+		i++
+	}
+	
+	// Verify should fail with tampered message
+	err = bbs.VerifyProof(keyPair.PublicKey, proof, tamperedMsgs, nil)
+	if err != nil {
+		fmt.Printf("✅ Correctly rejected tampered proof: %v\n", err)
+	} else {
+		fmt.Println("❌ Error: Tampered proof was incorrectly verified!")
+	}
+	
+	fmt.Println("\nFor more credential examples, run the programs in examples/credential_scenarios/")
+	fmt.Println("  - healthcare_credential.go  - Healthcare credential scenarios")
+	fmt.Println("  - digital_identity.go       - Digital identity credential scenarios")
+	fmt.Println("  - academic_credentials.go   - Academic credential scenarios")
 	
 	fmt.Println("\nBBS+ demonstration completed successfully!")
 }
