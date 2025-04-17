@@ -30,7 +30,7 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int) (bls12381.
 
 		bytes := scalar.Bytes()
 		if err := frScalars[i].SetBytes(bytes); err != nil {
-			return bls12381.G1Affine{}, fmt.Errorf("invalid scalar at index %d: %w", i, err)
+			return bls12381.G1Affine{}, fmt.Errorf("invalid scalar at index %d: %v", i, err)
 		}
 	}
 
