@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/asv/bbs/bbs"
+	"github.com/anupsv/bbsplus-signatures/bbs"
 )
 
 func main() {
@@ -27,13 +27,13 @@ func main() {
 
 	// Create serializable format
 	serialized := struct {
-		PrivateKey    string `json:"privateKey"`
-		PublicKey     string `json:"publicKey"`
-		MessageCount  int    `json:"messageCount"`
+		PrivateKey   string `json:"privateKey"`
+		PublicKey    string `json:"publicKey"`
+		MessageCount int    `json:"messageCount"`
 	}{
-		PrivateKey:    base64.StdEncoding.EncodeToString(keyPair.PrivateKey.X.Bytes()),
-		PublicKey:     base64.StdEncoding.EncodeToString(bbs.SerializePublicKey(keyPair.PublicKey)),
-		MessageCount:  keyPair.PublicKey.MessageCount,
+		PrivateKey:   base64.StdEncoding.EncodeToString(keyPair.PrivateKey.X.Bytes()),
+		PublicKey:    base64.StdEncoding.EncodeToString(bbs.SerializePublicKey(keyPair.PublicKey)),
+		MessageCount: keyPair.PublicKey.MessageCount,
 	}
 
 	// Convert to JSON
