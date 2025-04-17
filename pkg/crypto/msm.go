@@ -46,28 +46,32 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int) (bls12381.
 // batchedMSM performs multi-scalar multiplication using a bucketing algorithm
 // for improved performance on large input sets.
 func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Affine, error) {
-	// Compute optimal window size based on input size
-	// Following the recommendations in the paper:
-	// "Faster batch forgery identification"
-	// by Daniel J. Bernstein, Jeroen Doumen, Tanja Lange, and Jan-Jaap Oosterwijk
-	windowSize := 10
-	if len(points) > 1000 {
-		windowSize = 16
-	} else if len(points) > 500 {
-		windowSize = 14
-	} else if len(points) > 100 {
-		windowSize = 12
-	}
-	
-	// Create a multi-exponentiation configuration
-	config := bls12381.MultiExpConfig{
-		NbTasks: 8, // Use 8 worker threads for parallelism
-	}
-	
 	// Compute the result in Jacobian coordinates for efficiency
 	var result bls12381.G1Jac
-	if err := result.MultiExp(points, scalars, config); err != nil {
-		return bls12381.G1Affine{}, fmt.Errorf("multi-exponentiation failed: %w", err)
+	
+	// Do manual scalar multiplication
+	// This avoids compatibility issues with different gnark-crypto versions
+	for i := 0; i < len(points); i++ {
+		// Skip if scalar is zero
+		if scalars[i].IsZero() {
+			continue
+		}
+		
+		// Convert the scalar to big.Int for ScalarMultiplication
+		var scalarBig big.Int
+		scalars[i].ToBigIntRegular(&scalarBig)
+		
+		// Compute point * scalar
+		var tmp bls12381.G1Jac
+		tmp.FromAffine(&points[i])
+		tmp.ScalarMultiplication(&tmp, &scalarBig)
+		
+		// Add to result
+		if i == 0 {
+			result = tmp
+		} else {
+			result.AddAssign(&tmp)
+		}
 	}
 	
 	// Convert to affine coordinates for the result

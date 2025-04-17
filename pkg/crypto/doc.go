@@ -21,12 +21,6 @@
 // use the core package instead.
 package crypto
 
-import (
-	"math/big"
-
-	bls12381 "github.com/consensys/gnark-crypto/ecc/bls12-381"
-)
-
 // Domain separation tags
 const (
 	// DST_G1 is the domain separation tag for hashing to G1

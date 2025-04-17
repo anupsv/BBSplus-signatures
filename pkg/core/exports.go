@@ -27,5 +27,5 @@ var (
 // BLS12-381 curve constants
 var (
 	// Order is the order of the BLS12-381 curve
-	Order = new(big.Int).SetString("73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001", 16)
+	Order, _ = new(big.Int).SetString("73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001", 16)
 )

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/asv/projects/bbs/bbs"
-	"github.com/asv/projects/bbs/pkg/core"
-	"github.com/asv/projects/bbs/pkg/proof"
+	"github.com/asv/bbs/bbs"
+	"github.com/asv/bbs/pkg/core"
+	"github.com/asv/bbs/pkg/proof"
 	"github.com/consensys/gnark-crypto/ecc/bls12-381"
 )
 

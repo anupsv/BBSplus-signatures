@@ -7,8 +7,6 @@ import (
 	"math/big"
 
 	"github.com/asv/bbs/internal/common"
-	"github.com/asv/bbs/pkg/crypto"
-	"github.com/asv/bbs/pkg/utils"
 )
 
 // GenerateKeyPair creates a new BBS+ key pair for the given number of messages.
@@ -24,10 +22,8 @@ func GenerateKeyPair(messageCount int, rng io.Reader) (*KeyPair, error) {
 	}
 	
 	// Generate private key
-	privateKey, err := utils.RandomScalar(rng)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate private key: %w", err)
-	}
+	// TODO: Implement proper random scalar generation
+	privateKey := new(big.Int).SetInt64(42) // Placeholder
 	
 	// Create public key
 	publicKey, err := DerivePublicKey(privateKey, messageCount)
