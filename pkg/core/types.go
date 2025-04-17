@@ -78,52 +78,8 @@ type ProofOfKnowledge struct {
 	SHat *big.Int
 	
 	// MHat contains the blinded undisclosed messages
-	MHat []*big.Int
+	MHat map[int]*big.Int
 	
 	// RHat contains the blinded message randomness
 	RHat []*big.Int
-}
-
-// SignOptions contains options for the Sign operation
-type SignOptions struct {
-	// DeterministicSignature enables deterministic signature generation
-	// (primarily for testing)
-	DeterministicSignature bool
-	
-	// Blinding factors for signature generation (if nil, random values are used)
-	BlindingFactors *SignatureBlindingFactors
-}
-
-// SignatureBlindingFactors contains blinding factors for signature generation
-type SignatureBlindingFactors struct {
-	// E is the signature blinding factor
-	E *big.Int
-	
-	// S is the signature randomness
-	S *big.Int
-}
-
-// ProofOptions contains options for proof creation
-type ProofOptions struct {
-	// DeterministicProof enables deterministic proof generation
-	// (primarily for testing)
-	DeterministicProof bool
-	
-	// RevealAll forces all messages to be revealed
-	RevealAll bool
-	
-	// QuickVerify optimizes proof for faster verification
-	// (may make proofs larger)
-	QuickVerify bool
-}
-
-// VerifyOptions contains options for signature verification
-type VerifyOptions struct {
-	// Batch enables batch verification when multiple signatures
-	// are being verified
-	Batch bool
-	
-	// QuickVerify uses optimizations that may sacrifice some security
-	// for improved performance
-	QuickVerify bool
 }

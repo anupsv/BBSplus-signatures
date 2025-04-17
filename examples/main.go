@@ -136,6 +136,6 @@ func run_bbs_demo() {
 	fmt.Println("\nBBS+ demonstration completed successfully!")
 }
 
-func RunExample() {
+func main() {
 	run_bbs_demo()
 }

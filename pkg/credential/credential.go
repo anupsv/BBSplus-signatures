@@ -3,10 +3,7 @@ package credential
 import (
 	"encoding/json"
 	"fmt"
-	"math/big"
 	"time"
-
-	"github.com/anupsv/bbsplus-signatures/internal/common"
 )
 
 // Credential represents a BBS+ credential with attributes
@@ -33,15 +30,12 @@ type Credential struct {
 	ExpirationDate *time.Time `json:"expirationDate,omitempty"`
 
 	// private data for storage
-	signature interface{} // Placeholder for signature
-	messages  []*big.Int  // Attribute values as field elements
 	attrNames []string    // Ordered attribute names
 }
 
 // Builder provides a fluent interface for creating credentials
 type Builder struct {
 	credential Credential
-	keyPair    interface{} // Placeholder for KeyPair
 }
 
 // NewBuilder creates a new credential builder
@@ -80,27 +74,19 @@ func (b *Builder) AddAttribute(name, value string) *Builder {
 }
 
 // Issue signs the credential with the issuer's key pair
-func (b *Builder) Issue(keyPair interface{}) (*Credential, error) {
-	if keyPair == nil {
-		return nil, common.ErrInvalidParameter
-	}
-
-	// In a real implementation, this would use the keyPair to sign the attributes
+func (b *Builder) Issue() (*Credential, error) {
 	b.credential.IssuanceDate = time.Now()
-
-	return &b.credential, nil
+	return &b.credential, fmt.Errorf("BBS+ signature creation not implemented")
 }
 
 // Verify checks if the credential is valid
 func (c *Credential) Verify() error {
-	// This is a placeholder implementation
-
 	// Check expiration
 	if c.ExpirationDate != nil && time.Now().After(*c.ExpirationDate) {
 		return fmt.Errorf("credential has expired")
 	}
 
-	return nil
+	return fmt.Errorf("BBS+ signature verification not implemented")
 }
 
 // CreatePresentation creates a selective disclosure presentation
@@ -124,20 +110,21 @@ func (c *Credential) CreatePresentation(disclosedAttrs []string) (*Presentation,
 	// Create a presentation
 	presentation := &Presentation{
 		Schema:     c.Schema,
-		Proof:      "dummy-proof",
 		Attributes: make(map[string]string),
 		Issuer:     c.Issuer,
 		Created:    time.Now(),
 	}
 
 	// Add disclosed attributes
-	for i := range disclosedIndices {
-		name := c.attrNames[i]
-		value := c.Attributes[name]
-		presentation.Attributes[name] = value
+	for _, idx := range disclosedIndices {
+		if idx >= 0 && idx < len(c.attrNames) {
+			name := c.attrNames[idx]
+			value := c.Attributes[name]
+			presentation.Attributes[name] = value
+		}
 	}
 
-	return presentation, nil
+	return presentation, fmt.Errorf("BBS+ proof generation not implemented")
 }
 
 // MarshalJSON serializes the credential to JSON

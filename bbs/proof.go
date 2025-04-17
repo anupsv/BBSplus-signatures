@@ -711,6 +711,17 @@ func ExtendProofOriginal(
 	sHat := new(big.Int).Add(proof.SHat, s)
 	sHat.Mod(sHat, Order)
 	
+	// Create MHat for the new proof - copy existing values and remove newly disclosed indices
+	newMHat := make(map[int]*big.Int)
+	for idx, val := range proof.MHat {
+		newMHat[idx] = new(big.Int).Set(val)
+	}
+	
+	// Remove entries for newly disclosed messages
+	for _, idx := range additionalIndices {
+		delete(newMHat, idx)
+	}
+	
 	// Create the new proof
 	newProof := &ProofOfKnowledge{
 		APrime: proof.APrime,
@@ -719,6 +730,7 @@ func ExtendProofOriginal(
 		C:      c,
 		EHat:   eHat,
 		SHat:   sHat,
+		MHat:   newMHat,
 	}
 	
 	return newProof, newDisclosedMessages, nil

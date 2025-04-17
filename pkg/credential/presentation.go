@@ -25,14 +25,10 @@ type Presentation struct {
 	
 	// NonceUsed is the nonce used in the presentation (if any)
 	NonceUsed string `json:"nonceUsed,omitempty"`
-	
-	// Internal representation of the proof
-	proof interface{}
 }
 
 // Verifier provides a fluent interface for verifying presentations
 type Verifier struct {
-	publicKey      interface{}
 	presentation   *Presentation
 	expectedIssuer string
 	expectedSchema string
@@ -42,12 +38,6 @@ type Verifier struct {
 // NewVerifier creates a new presentation verifier
 func NewVerifier() *Verifier {
 	return &Verifier{}
-}
-
-// SetPublicKey sets the issuer's public key for verification
-func (v *Verifier) SetPublicKey(publicKey interface{}) *Verifier {
-	v.publicKey = publicKey
-	return v
 }
 
 // SetPresentation sets the presentation to verify
@@ -80,10 +70,6 @@ func (v *Verifier) Verify() error {
 		return fmt.Errorf("no presentation provided")
 	}
 	
-	if v.publicKey == nil {
-		return fmt.Errorf("no public key provided")
-	}
-	
 	// Check issuer if expected
 	if v.expectedIssuer != "" && v.presentation.Issuer != v.expectedIssuer {
 		return fmt.Errorf("unexpected issuer: expected %s, got %s",
@@ -101,15 +87,7 @@ func (v *Verifier) Verify() error {
 		return fmt.Errorf("incorrect nonce used in presentation")
 	}
 	
-	// Decode the proof
-	// TODO: Implement proof decoding from Base64
-	
-	// In a real implementation, this would convert attributes to disclosed messages
-	
-	// This is a placeholder for proof verification
-	// In a real implementation, this would verify the proof
-	
-	return nil
+	return fmt.Errorf("BBS+ proof verification not implemented")
 }
 
 // MarshalJSON serializes the presentation to JSON
@@ -160,9 +138,6 @@ func (p *Presentation) UnmarshalJSON(data []byte) error {
 	p.Issuer = temp.Issuer
 	p.Created = temp.Created
 	p.NonceUsed = temp.NonceUsed
-	
-	// Decode the proof
-	// TODO: Decode proof from Base64
 	
 	return nil
 }

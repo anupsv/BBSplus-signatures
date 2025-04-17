@@ -21,21 +21,7 @@ func GenerateKeyPair(messageCount int, rng io.Reader) (*KeyPair, error) {
 		rng = rand.Reader
 	}
 
-	// Generate private key
-	// TODO: Implement proper random scalar generation
-	privateKey := new(big.Int).SetInt64(42) // Placeholder
-
-	// Create public key
-	publicKey, err := DerivePublicKey(privateKey, messageCount)
-	if err != nil {
-		return nil, fmt.Errorf("failed to derive public key: %w", err)
-	}
-
-	return &KeyPair{
-		PrivateKey:   &PrivateKey{Value: privateKey},
-		PublicKey:    publicKey,
-		MessageCount: messageCount,
-	}, nil
+	return nil, fmt.Errorf("key generation not implemented")
 }
 
 // DerivePublicKey derives a public key from a private key for the given number of messages.
@@ -48,13 +34,7 @@ func DerivePublicKey(privateKey *big.Int, messageCount int) (*PublicKey, error) 
 		return nil, common.ErrInvalidParameter
 	}
 
-	// TODO: Implement public key derivation
-	// This will use the crypto package to perform the necessary operations
-
-	return &PublicKey{
-		MessageCount: messageCount,
-		// Initialize other fields...
-	}, nil
+	return nil, fmt.Errorf("public key derivation not implemented")
 }
 
 // Sign creates a BBS+ signature on the given messages using the provided key pair.
@@ -69,12 +49,7 @@ func Sign(privateKey *PrivateKey, publicKey *PublicKey, messages []*big.Int, hea
 		return nil, common.ErrMismatchedLengths
 	}
 
-	// TODO: Implement signature creation
-	// This will use the crypto package for cryptographic operations
-
-	return &Signature{
-		// Initialize fields...
-	}, nil
+	return nil, fmt.Errorf("signature creation not implemented")
 }
 
 // Verify checks if a BBS+ signature is valid for the given messages and public key.
@@ -89,10 +64,7 @@ func Verify(publicKey *PublicKey, signature *Signature, messages []*big.Int, hea
 		return common.ErrMismatchedLengths
 	}
 
-	// TODO: Implement signature verification
-	// This will use the crypto package for pairing operations
-
-	return nil
+	return fmt.Errorf("signature verification not implemented")
 }
 
 // CreateProof generates a selective disclosure proof for the given messages.
@@ -121,18 +93,13 @@ func CreateProof(
 		}
 	}
 
-	// TODO: Implement proof creation
-	// This will use the crypto and proof packages
-
 	// Create a map of disclosed messages
 	disclosedMessages := make(map[int]*big.Int)
-	for i, idx := range disclosedIndices {
-		disclosedMessages[i] = messages[idx]
+	for _, idx := range disclosedIndices {
+		disclosedMessages[idx] = messages[idx]
 	}
 
-	return &ProofOfKnowledge{
-		// Initialize fields...
-	}, disclosedMessages, nil
+	return nil, disclosedMessages, fmt.Errorf("proof creation not implemented")
 }
 
 // VerifyProof checks if a selective disclosure proof is valid.
@@ -148,10 +115,7 @@ func VerifyProof(
 		return common.ErrInvalidParameter
 	}
 
-	// TODO: Implement proof verification
-	// This will use the crypto and proof packages
-
-	return nil
+	return fmt.Errorf("proof verification not implemented")
 }
 
 // BatchVerifyProofs verifies multiple proofs in a batch for improved performance.
@@ -167,8 +131,5 @@ func BatchVerifyProofs(
 		return common.ErrMismatchedLengths
 	}
 
-	// TODO: Implement batch proof verification
-	// This will use the proof package's batch verification functionality
-
-	return nil
+	return fmt.Errorf("batch proof verification not implemented")
 }

@@ -12,7 +12,7 @@ func main() {
 	fmt.Println("BBS+ Signatures - A Go implementation with selective disclosure proofs")
 	fmt.Println("----------------------------------------------------------------")
 	fmt.Println("Example usage can be found in the examples directory:")
-	fmt.Println("To run the example: go run examples/coordinating_examples.go basic")
+	fmt.Println("To run the example: go run examples/main.go")
 	fmt.Println()
 	fmt.Println("For more information, see README.md")
 	
@@ -29,8 +29,8 @@ func main() {
 				return
 			}
 			
-			// Run the basic example
-			cmd := exec.Command("go", "run", filepath.Join(examplesDir, "coordinating_examples.go"), "basic")
+			// Run the main example
+			cmd := exec.Command("go", "run", filepath.Join(examplesDir, "main.go"))
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
 			err = cmd.Run()

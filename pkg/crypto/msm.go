@@ -48,12 +48,16 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int) (bls12381.
 func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Affine, error) {
 	// Compute the result in Jacobian coordinates for efficiency
 	var result bls12381.G1Jac
-
-	// Do manual scalar multiplication
-	// This avoids compatibility issues with different gnark-crypto versions
+	
+	// Initialize result as the identity element
+	result.X.SetOne()
+	result.Y.SetOne()
+	result.Z.SetOne()
+	
+	// Do scalar multiplication
 	for i := 0; i < len(points); i++ {
-		// Skip if scalar is zero
-		if scalars[i].IsZero() {
+		// Skip if scalar is zero or point is identity
+		if scalars[i].IsZero() || points[i].IsInfinity() {
 			continue
 		}
 
@@ -67,7 +71,7 @@ func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Af
 		tmp.ScalarMultiplication(&tmp, &scalarBig)
 
 		// Add to result
-		if i == 0 {
+		if i == 0 && !points[i].IsInfinity() && !scalars[i].IsZero() {
 			result = tmp
 		} else {
 			result.AddAssign(&tmp)
@@ -86,9 +90,9 @@ func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Af
 func directMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Affine, error) {
 	// Initialize result as the identity element
 	result := bls12381.G1Jac{}
-	result.X.SetZero()
+	result.X.SetOne()
 	result.Y.SetOne()
-	result.Z.SetOne() // Z=1 for identity point (not Z=0 which is invalid)
+	result.Z.SetOne()
 
 	// Process points in a single batch
 	for i := 0; i < len(points); i++ {
