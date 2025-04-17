@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/asv/bbs/internal/common"
+	"github.com/anupsv/bbsplus-signatures/internal/common"
 	bls12381 "github.com/consensys/gnark-crypto/ecc/bls12-381"
 	"github.com/consensys/gnark-crypto/ecc/bls12-381/fr"
 )
@@ -15,30 +15,30 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int) (bls12381.
 	if len(points) != len(scalars) {
 		return bls12381.G1Affine{}, common.ErrMismatchedLengths
 	}
-	
+
 	// Handle empty input
 	if len(points) == 0 {
 		return bls12381.G1Affine{}, nil
 	}
-	
+
 	// Convert big.Int scalars to fr.Element for use with gnark-crypto
 	frScalars := make([]fr.Element, len(scalars))
 	for i, scalar := range scalars {
 		if scalar == nil {
 			return bls12381.G1Affine{}, fmt.Errorf("nil scalar at index %d", i)
 		}
-		
+
 		bytes := scalar.Bytes()
 		if err := frScalars[i].SetBytes(bytes); err != nil {
 			return bls12381.G1Affine{}, fmt.Errorf("invalid scalar at index %d: %w", i, err)
 		}
 	}
-	
+
 	// Use batched multi-scalar multiplication for large input sets
 	if len(points) > 16 {
 		return batchedMSM(points, frScalars)
 	}
-	
+
 	// For smaller input sets, use direct computation for better performance
 	return directMSM(points, frScalars)
 }
@@ -48,7 +48,7 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int) (bls12381.
 func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Affine, error) {
 	// Compute the result in Jacobian coordinates for efficiency
 	var result bls12381.G1Jac
-	
+
 	// Do manual scalar multiplication
 	// This avoids compatibility issues with different gnark-crypto versions
 	for i := 0; i < len(points); i++ {
@@ -56,16 +56,16 @@ func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Af
 		if scalars[i].IsZero() {
 			continue
 		}
-		
+
 		// Convert the scalar to big.Int for ScalarMultiplication
 		var scalarBig big.Int
 		scalars[i].ToBigIntRegular(&scalarBig)
-		
+
 		// Compute point * scalar
 		var tmp bls12381.G1Jac
 		tmp.FromAffine(&points[i])
 		tmp.ScalarMultiplication(&tmp, &scalarBig)
-		
+
 		// Add to result
 		if i == 0 {
 			result = tmp
@@ -73,11 +73,11 @@ func batchedMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Af
 			result.AddAssign(&tmp)
 		}
 	}
-	
+
 	// Convert to affine coordinates for the result
 	var resultAffine bls12381.G1Affine
 	resultAffine.FromJacobian(&result)
-	
+
 	return resultAffine, nil
 }
 
@@ -89,30 +89,30 @@ func directMSM(points []bls12381.G1Affine, scalars []fr.Element) (bls12381.G1Aff
 	result.X.SetZero()
 	result.Y.SetOne()
 	result.Z.SetOne() // Z=1 for identity point (not Z=0 which is invalid)
-	
+
 	// Process points in a single batch
 	for i := 0; i < len(points); i++ {
 		// Skip if scalar is zero or point is infinity
 		if scalars[i].IsZero() || points[i].IsInfinity() {
 			continue
 		}
-		
+
 		// Convert scalar to big.Int for ScalarMultiplication
 		var scalarBig big.Int
 		scalars[i].ToBigIntRegular(&scalarBig)
-		
+
 		// Compute point * scalar
 		var tmp bls12381.G1Jac
 		tmp.FromAffine(&points[i])
 		tmp.ScalarMultiplication(&tmp, &scalarBig)
-		
+
 		// Add to running sum
 		result.AddAssign(&tmp)
 	}
-	
+
 	// Convert result to affine coordinates
 	var resultAffine bls12381.G1Affine
 	resultAffine.FromJacobian(&result)
-	
+
 	return resultAffine, nil
 }

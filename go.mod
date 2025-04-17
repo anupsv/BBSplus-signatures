@@ -1,4 +1,4 @@
-module github.com/asv/bbs
+module github.com/anupsv/bbsplus-signatures
 
 go 1.23.0
 

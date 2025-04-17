@@ -6,13 +6,13 @@
 //
 // Example usage:
 //
-//     // Old code:
-//     import "github.com/asv/bbs/bbs"
-//     keyPair, _ := bbs.GenerateKeyPair(5, nil)
+//	// Old code:
+//	import "github.com/asv/bbs/bbs"
+//	keyPair, _ := bbs.GenerateKeyPair(5, nil)
 //
-//     // New code with compatibility layer:
-//     import "github.com/asv/bbs/pkg/bbscompat"
-//     keyPair, _ := bbscompat.GenerateKeyPair(5, nil)
+//	// New code with compatibility layer:
+//	import "github.com/asv/bbs/pkg/bbscompat"
+//	keyPair, _ := bbscompat.GenerateKeyPair(5, nil)
 //
 // It is recommended to eventually migrate to the new package structure
 // for better organization and access to new features.
@@ -22,23 +22,23 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/asv/bbs/pkg/core"
+	"github.com/anupsv/bbsplus-signatures/pkg/core"
 )
 
 // Re-export types from core package
 type (
 	// KeyPair represents a BBS+ key pair
 	KeyPair = core.KeyPair
-	
+
 	// PrivateKey represents a BBS+ private key
 	PrivateKey = core.PrivateKey
-	
+
 	// PublicKey represents a BBS+ public key
 	PublicKey = core.PublicKey
-	
+
 	// Signature represents a BBS+ signature
 	Signature = core.Signature
-	
+
 	// ProofOfKnowledge represents a BBS+ selective disclosure proof
 	ProofOfKnowledge = core.ProofOfKnowledge
 )

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/asv/bbs/bbs"
-	"github.com/asv/bbs/pkg/core"
-	"github.com/consensys/gnark-crypto/ecc/bls12-381"
+	"github.com/anupsv/bbsplus-signatures/bbs"
+	"github.com/anupsv/bbsplus-signatures/pkg/core"
+	bls12381 "github.com/consensys/gnark-crypto/ecc/bls12-381"
 )
 
 // KeyConverter converts between old and new key formats
@@ -216,7 +216,7 @@ func (pc *ProofConverter) ConvertLegacyProof(oldProof *bbs.ProofOfKnowledge) (*c
 	}
 
 	// Convert the MHat map to a slice
-	// This is a simplification - in a real implementation 
+	// This is a simplification - in a real implementation
 	// we would need to handle the indices properly
 	for _, mhat := range oldProof.MHat {
 		newProof.MHat = append(newProof.MHat, new(big.Int).Set(mhat))
@@ -316,8 +316,8 @@ func (vh *VerificationHelper) VerifyWithNewCode(
 // LegacyVerifyProof is a compatibility function that uses the same signature as the original
 // VerifyProof function but delegates to the core package
 func LegacyVerifyProof(
-	publicKey *core.PublicKey, 
-	proof *core.ProofOfKnowledge, 
+	publicKey *core.PublicKey,
+	proof *core.ProofOfKnowledge,
 	disclosedMessages map[int]*big.Int,
 	header []byte,
 ) error {
