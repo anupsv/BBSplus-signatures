@@ -1,1 +1,3 @@
-Package proof removed temporarily for WASM build.
+package proof
+
+// Package temporarily simplified for WASM build
