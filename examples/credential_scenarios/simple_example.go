@@ -9,7 +9,7 @@ import (
 	"github.com/asv/bbs/bbs"
 )
 
-func main() {
+func RunSimpleExample() {
 	fmt.Println("Simple BBS+ Example - Demonstrating the improved code")
 	fmt.Println("===================================================")
 	
@@ -41,9 +41,10 @@ func main() {
 	
 	// Sign the messages
 	fmt.Println("\nSigning messages...")
-	signature, err := bbs.Sign(keyPair.PrivateKey, keyPair.PublicKey, messages, nil)
-	if err != nil {
-		log.Fatalf("Failed to sign messages: %v", err)
+	var err2 error
+	_, err2 = bbs.Sign(keyPair.PrivateKey, keyPair.PublicKey, messages, nil)
+	if err2 != nil {
+		log.Fatalf("Failed to sign messages: %v", err2)
 	}
 	
 	// We can now use our credential examples even if the main library

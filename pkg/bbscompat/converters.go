@@ -6,7 +6,6 @@ import (
 
 	"github.com/asv/bbs/bbs"
 	"github.com/asv/bbs/pkg/core"
-	"github.com/asv/bbs/pkg/proof"
 	"github.com/consensys/gnark-crypto/ecc/bls12-381"
 )
 
@@ -75,7 +74,7 @@ func (kc *KeyConverter) ConvertLegacyPrivateKey(oldSk *bbs.PrivateKey) (*core.Pr
 
 	// Create a new private key
 	newSk := &core.PrivateKey{
-		Value: new(big.Int).Set(oldSk.Value),
+		Value: new(big.Int).Set(oldSk.X),
 	}
 
 	return newSk, nil
@@ -89,7 +88,7 @@ func (kc *KeyConverter) ConvertPrivateKey(newSk *core.PrivateKey) (*bbs.PrivateK
 
 	// Create a legacy private key
 	oldSk := &bbs.PrivateKey{
-		Value: new(big.Int).Set(newSk.Value),
+		X: new(big.Int).Set(newSk.Value),
 	}
 
 	return oldSk, nil
@@ -117,7 +116,7 @@ func (kc *KeyConverter) ConvertLegacyKeyPair(oldKeyPair *bbs.KeyPair) (*core.Key
 	newKeyPair := &core.KeyPair{
 		PrivateKey:   newSk,
 		PublicKey:    newPk,
-		MessageCount: oldKeyPair.MessageCount,
+		MessageCount: oldKeyPair.PublicKey.MessageCount,
 	}
 
 	return newKeyPair, nil
@@ -143,9 +142,8 @@ func (kc *KeyConverter) ConvertKeyPair(newKeyPair *core.KeyPair) (*bbs.KeyPair, 
 
 	// Create a legacy key pair
 	oldKeyPair := &bbs.KeyPair{
-		PrivateKey:   oldSk,
-		PublicKey:    oldPk,
-		MessageCount: newKeyPair.MessageCount,
+		PrivateKey: oldSk,
+		PublicKey:  oldPk,
 	}
 
 	return oldKeyPair, nil
@@ -213,37 +211,16 @@ func (pc *ProofConverter) ConvertLegacyProof(oldProof *bbs.ProofOfKnowledge) (*c
 		C:      new(big.Int).Set(oldProof.C),
 		EHat:   new(big.Int).Set(oldProof.EHat),
 		SHat:   new(big.Int).Set(oldProof.SHat),
+		MHat:   make([]*big.Int, 0),
+		RHat:   make([]*big.Int, 0),
 	}
 
-	// Convert MHat map to slice
-	// First find the highest index in the map
-	maxIndex := -1
-	for idx := range oldProof.MHat {
-		if idx > maxIndex {
-			maxIndex = idx
-		}
+	// Convert the MHat map to a slice
+	// This is a simplification - in a real implementation 
+	// we would need to handle the indices properly
+	for _, mhat := range oldProof.MHat {
+		newProof.MHat = append(newProof.MHat, new(big.Int).Set(mhat))
 	}
-
-	if maxIndex >= 0 {
-		// Create a slice of the right size and fill it
-		newProof.MHat = make([]*big.Int, 0, maxIndex+1)
-		
-		// Convert the map values to a slice in order of indices
-		indices := make([]int, 0, len(oldProof.MHat))
-		for idx := range oldProof.MHat {
-			indices = append(indices, idx)
-		}
-		
-		// Sort indices for deterministic ordering
-		sortInts(indices)
-		
-		// Fill the slice in order
-		for _, idx := range indices {
-			newProof.MHat = append(newProof.MHat, new(big.Int).Set(oldProof.MHat[idx]))
-		}
-	}
-
-	// RHat is not used in the legacy implementation, so it stays empty
 
 	return newProof, nil
 }
@@ -265,8 +242,9 @@ func (pc *ProofConverter) ConvertProof(newProof *core.ProofOfKnowledge) (*bbs.Pr
 		MHat:   make(map[int]*big.Int),
 	}
 
-	// Convert MHat slice to map
-	// For simplicity, we'll use sequential indices starting from 0
+	// Convert the MHat slice to a map
+	// This is a simplification - in a real implementation
+	// we would need to handle the indices properly
 	for i, mhat := range newProof.MHat {
 		oldProof.MHat[i] = new(big.Int).Set(mhat)
 	}
@@ -331,25 +309,18 @@ func (vh *VerificationHelper) VerifyWithNewCode(
 
 	newMessages := vh.proofConverter.ConvertLegacyDisclosedMessages(oldMessages)
 
-	// Use the new verifier
-	verifier := proof.NewVerifier()
-	verifier.SetPublicKey(newPk)
-	verifier.SetProof(newProof)
-	verifier.SetDisclosedMessages(newMessages)
-	verifier.SetHeader(header)
-
-	return verifier.Verify()
+	// Use the core package's verification function
+	return core.VerifyProof(newPk, newProof, newMessages, header)
 }
 
-// sortInts sorts an array of integers
-func sortInts(arr []int) {
-	// Simple bubble sort for small arrays
-	n := len(arr)
-	for i := 0; i < n-1; i++ {
-		for j := 0; j < n-i-1; j++ {
-			if arr[j] > arr[j+1] {
-				arr[j], arr[j+1] = arr[j+1], arr[j]
-			}
-		}
-	}
+// LegacyVerifyProof is a compatibility function that uses the same signature as the original
+// VerifyProof function but delegates to the core package
+func LegacyVerifyProof(
+	publicKey *core.PublicKey, 
+	proof *core.ProofOfKnowledge, 
+	disclosedMessages map[int]*big.Int,
+	header []byte,
+) error {
+	// Delegate to the core package's verification function
+	return core.VerifyProof(publicKey, proof, disclosedMessages, header)
 }

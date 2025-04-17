@@ -10,7 +10,9 @@ import (
 	"io/ioutil"
 	"math/big"
 	"os"
+	"sort"
 	"strings"
+	"time"
 
 	"github.com/asv/bbs/bbs"
 )
@@ -470,7 +472,7 @@ func cmdCreateProof(args []string) error {
 	}
 	
 	// Create proof
-	proof, disclosedMsgs, err := bbs.CreateProof(publicKey, signature, messages, disclosedIndices, nil)
+	proof, _, err := bbs.CreateProof(publicKey, signature, messages, disclosedIndices, nil)
 	if err != nil {
 		return fmt.Errorf("failed to create proof: %w", err)
 	}
@@ -483,7 +485,7 @@ func cmdCreateProof(args []string) error {
 	
 	// Create disclosed messages map with attribute names
 	disclosedMessages := make(map[string]string)
-	for i, idx := range disclosedIndices {
+	for i := range disclosedIndices {
 		name := disclosedNames[i]
 		value := credential.Messages[name]
 		disclosedMessages[name] = value

@@ -12,7 +12,7 @@ func main() {
 	fmt.Println("BBS+ Signatures - A Go implementation with selective disclosure proofs")
 	fmt.Println("----------------------------------------------------------------")
 	fmt.Println("Example usage can be found in the examples directory:")
-	fmt.Println("To run the example: go run examples/main.go")
+	fmt.Println("To run the example: go run examples/coordinating_examples.go basic")
 	fmt.Println()
 	fmt.Println("For more information, see README.md")
 	
@@ -20,7 +20,7 @@ func main() {
 	if _, err := os.Stat("examples"); err == nil {
 		// Run the example if no arguments provided
 		if len(os.Args) == 1 {
-			fmt.Println("\nRunning the example...")
+			fmt.Println("\nRunning the basic example...")
 			
 			// Get the absolute path to the examples directory
 			examplesDir, err := filepath.Abs("examples")
@@ -29,8 +29,8 @@ func main() {
 				return
 			}
 			
-			// Run the example
-			cmd := exec.Command("go", "run", filepath.Join(examplesDir, "main.go"))
+			// Run the basic example
+			cmd := exec.Command("go", "run", filepath.Join(examplesDir, "coordinating_examples.go"), "basic")
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
 			err = cmd.Run()

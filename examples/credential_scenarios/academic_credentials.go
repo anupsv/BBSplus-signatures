@@ -9,7 +9,7 @@ import (
 	"github.com/asv/bbs/bbs"
 )
 
-func main() {
+func RunAcademicCredentialExample() {
 	fmt.Println("Academic Credential Example - Using BBS+ signatures")
 	fmt.Println("=================================================")
 	

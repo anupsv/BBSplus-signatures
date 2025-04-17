@@ -31,9 +31,9 @@ func main() {
 		PublicKey     string `json:"publicKey"`
 		MessageCount  int    `json:"messageCount"`
 	}{
-		PrivateKey:    base64.StdEncoding.EncodeToString(keyPair.PrivateKey.Value.Bytes()),
-		PublicKey:     "PLACEHOLDER", // In a real implementation, we would serialize the public key
-		MessageCount:  keyPair.MessageCount,
+		PrivateKey:    base64.StdEncoding.EncodeToString(keyPair.PrivateKey.X.Bytes()),
+		PublicKey:     base64.StdEncoding.EncodeToString(bbs.SerializePublicKey(keyPair.PublicKey)),
+		MessageCount:  keyPair.PublicKey.MessageCount,
 	}
 
 	// Convert to JSON

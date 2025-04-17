@@ -9,7 +9,7 @@ import (
 	"github.com/asv/bbs/bbs"
 )
 
-func main() {
+func RunDigitalIdentityExample() {
 	fmt.Println("Digital Identity Credential Example - Using BBS+ signatures")
 	fmt.Println("========================================================")
 	

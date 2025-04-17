@@ -13,10 +13,9 @@ import (
 	
 	// New imports for complete migration
 	"github.com/asv/bbs/pkg/core"
-	"github.com/asv/bbs/pkg/credential"
 )
 
-func main() {
+func RunMigrationExample() {
 	fmt.Println("BBS+ Package Migration Example")
 	fmt.Println("==============================")
 	

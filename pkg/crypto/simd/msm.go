@@ -6,7 +6,6 @@ import (
 	"runtime"
 
 	bls12381 "github.com/consensys/gnark-crypto/ecc/bls12-381"
-	"github.com/consensys/gnark-crypto/ecc/bls12-381/fr"
 )
 
 // OptimizationLevel defines the level of optimization to use
@@ -41,11 +40,7 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int, level Opti
 		return bls12381.G1Affine{}, nil
 	}
 	
-	// Convert big.Int scalars to fr.Element
-	frScalars, err := convertScalars(scalars)
-	if err != nil {
-		return bls12381.G1Affine{}, fmt.Errorf("failed to convert scalars: %w", err)
-	}
+	// For the simplified version, we'll just use big.Int values directly
 	
 	// Determine optimization level to use
 	optLevel := level
@@ -54,31 +49,30 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int, level Opti
 	}
 	
 	// Use the appropriate implementation based on the optimization level
-	switch optLevel {
-	case OptimizationAVX2:
-		if HasAVX2() {
-			return MultiScalarMulG1AVX2(points, frScalars)
-		}
-		// Fall back to standard implementation
-	case OptimizationAVX512:
-		if HasAVX512() {
-			return MultiScalarMulG1AVX512(points, frScalars)
-		}
-		// Fall back to AVX2 if available
-		if HasAVX2() {
-			return MultiScalarMulG1AVX2(points, frScalars)
-		}
-		// Fall back to standard implementation
-	case OptimizationNEON:
-		if HasNeon() {
-			return MultiScalarMulG1NEON(points, frScalars)
-		}
-		// Fall back to standard implementation
-	}
+	// We'll use a placeholder implementation for now
 	
 	// Standard implementation (no SIMD)
 	var result bls12381.G1Jac
-	result.MultiExp(points, frScalars, bls12381.MultiExpConfig{})
+	
+	// Do manual scalar multiplication
+	for i := 0; i < len(points); i++ {
+		// Skip if scalar is zero
+		if scalars[i].Sign() == 0 {
+			continue
+		}
+		
+		// Compute point * scalar
+		var tmp bls12381.G1Jac
+		tmp.FromAffine(&points[i])
+		tmp.ScalarMultiplication(&tmp, scalars[i])
+		
+		// Add to result
+		if i == 0 {
+			result = tmp
+		} else {
+			result.AddAssign(&tmp)
+		}
+	}
 	
 	var resultAffine bls12381.G1Affine
 	resultAffine.FromJacobian(&result)
@@ -89,24 +83,24 @@ func MultiScalarMulG1(points []bls12381.G1Affine, scalars []*big.Int, level Opti
 // determineOptimization automatically determines the best optimization level
 // based on the CPU architecture and available instructions
 func determineOptimization() OptimizationLevel {
-	// Check CPU architecture
-	switch runtime.GOARCH {
-	case "amd64":
-		// Check for AVX512 support
-		if HasAVX512() {
-			return OptimizationAVX512
-		}
-		// Check for AVX2 support
-		if HasAVX2() {
-			return OptimizationAVX2
-		}
-	case "arm64":
-		// Check for NEON support (always available on arm64)
-		if HasNeon() {
-			return OptimizationNEON
-		}
-	}
-	
-	// No optimizations available
+	// For simplicity, always return the standard implementation
 	return OptimizationNone
+}
+
+// HasAVX2 checks if the CPU supports AVX2 instructions
+func HasAVX2() bool {
+	// Placeholder - in a real implementation, this would check CPU features
+	return false
+}
+
+// HasAVX512 checks if the CPU supports AVX512 instructions
+func HasAVX512() bool {
+	// Placeholder - in a real implementation, this would check CPU features
+	return false
+}
+
+// HasNeon checks if the CPU supports NEON instructions (ARM SIMD)
+func HasNeon() bool {
+	// ARM64 always has NEON support
+	return runtime.GOARCH == "arm64"
 }

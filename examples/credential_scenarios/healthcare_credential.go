@@ -9,7 +9,7 @@ import (
 	"github.com/asv/bbs/bbs"
 )
 
-func main() {
+func RunHealthcareCredentialExample() {
 	fmt.Println("Healthcare Credential Example - Using BBS+ signatures")
 	fmt.Println("====================================================")
 	
@@ -86,7 +86,7 @@ func main() {
 	
 	// Display disclosed attributes for emergency
 	fmt.Println("Disclosed attributes for emergency room:")
-	for i, idx := range emergencyIndices {
+	for _, idx := range emergencyIndices {
 		fmt.Printf("  - %s\n", messageStrings[idx])
 	}
 	fmt.Println("Emergency disclosure proof verified successfully!")

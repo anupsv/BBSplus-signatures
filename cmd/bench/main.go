@@ -18,7 +18,7 @@ func main() {
 	iterations := flag.Int("iterations", 100, "Number of iterations for each benchmark")
 	batchOps := flag.Bool("batch", true, "Use batch operations where applicable")
 	concurrent := flag.Bool("concurrent", true, "Use concurrent operations where applicable")
-	maxTime := flag.Int("max-time", 0, "Maximum time per operation in milliseconds (0 = unlimited)")
+	_ = flag.Int("max-time", 0, "Maximum time per operation in milliseconds (0 = unlimited)") // Unused but kept for CLI compatibility
 	output := flag.String("output", "", "Output file path (empty for stdout)")
 	format := flag.String("format", "text", "Output format (text, json, csv, html)")
 	
@@ -26,13 +26,12 @@ func main() {
 	
 	// Create benchmark configuration
 	config := benchmarks.BenchmarkConfig{
-		Name:              *name,
-		MessageCount:      *messages,
-		DisclosedCount:    *disclosed,
-		Iterations:        *iterations,
-		UseBatchOperations: *batchOps,
-		UseConcurrency:    *concurrent,
-		MaxTimePerOp:      *maxTime,
+		Name:           *name,
+		MessageCount:   *messages,
+		DisclosedCount: *disclosed,
+		Iterations:     *iterations,
+		UseBatch:       *batchOps,
+		UseConcurrent:  *concurrent,
 	}
 	
 	// Validate configuration
