@@ -110,7 +110,7 @@ func run_bbs_demo() {
 	// Make a copy of the disclosed messages with one being tampered
 	tamperedMsgs := make(map[int]*big.Int)
 	i := 0
-	for _, idx := range disclosedIndices {
+	for range disclosedIndices {
 		if i == 0 {
 			// Tamper the first disclosed message
 			tamperedMsgs[i] = big.NewInt(12345)

@@ -34,4 +34,4 @@ perf_reports/
 *.out
 *.prof
 coverage.out
-benchmarks.json
+benchmarks.jsonwasm/
