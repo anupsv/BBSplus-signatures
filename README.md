@@ -37,7 +37,7 @@ This implementation includes all necessary security and functionality improvemen
 ### Installation
 
 ```bash
-git clone https://github.com/asv/bbs.git
+git clone https://github.com/anupsv/bbsplus-signatures.git
 cd bbs
 go mod tidy
 ```
@@ -80,7 +80,7 @@ import (
     "log"
     "math/big"
     
-    "github.com/asv/bbs/bbs"
+    "github.com/anupsv/bbsplus-signatures/bbs"
 )
 
 func main() {
