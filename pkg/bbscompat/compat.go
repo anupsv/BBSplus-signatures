@@ -6,14 +6,6 @@
 //
 // Example usage:
 //
-//	// Old code:
-//	import "github.com/asv/bbs/bbs"
-//	keyPair, _ := bbs.GenerateKeyPair(5, nil)
-//
-//	// New code with compatibility layer:
-//	import "github.com/asv/bbs/pkg/bbscompat"
-//	keyPair, _ := bbscompat.GenerateKeyPair(5, nil)
-//
 // It is recommended to eventually migrate to the new package structure
 // for better organization and access to new features.
 package bbscompat

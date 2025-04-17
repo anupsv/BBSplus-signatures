@@ -3,23 +3,23 @@ package core
 import (
 	"math/big"
 
-	"github.com/asv/bbs/internal/common"
+	"github.com/anupsv/bbsplus-signatures/internal/common"
 )
 
 // Public error variables from the BBS+ library
 var (
 	// ErrInvalidSignature indicates a signature verification failure
 	ErrInvalidSignature = common.ErrInvalidSignature
-	
+
 	// ErrInvalidProof indicates a proof verification failure
 	ErrInvalidProof = common.ErrInvalidProof
-	
+
 	// ErrInvalidPublicKey indicates an invalid public key
 	ErrInvalidPublicKey = common.ErrInvalidPublicKey
-	
+
 	// ErrInvalidParameter indicates an invalid parameter
 	ErrInvalidParameter = common.ErrInvalidParameter
-	
+
 	// ErrMismatchedLengths indicates mismatched lengths in inputs
 	ErrMismatchedLengths = common.ErrMismatchedLengths
 )

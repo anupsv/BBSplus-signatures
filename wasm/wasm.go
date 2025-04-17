@@ -10,19 +10,19 @@ import (
 	"math/big"
 	"syscall/js"
 
-	"github.com/asv/bbs/bbs"
+	"github.com/anupsv/bbsplus-signatures/bbs"
 )
 
 // Initialize WASM bindings
 func Initialize() {
 	js.Global().Set("BBS", js.ValueOf(
 		map[string]interface{}{
-			"version":        js.FuncOf(Version),
+			"version":         js.FuncOf(Version),
 			"generateKeyPair": js.FuncOf(GenerateKeyPair),
-			"sign":           js.FuncOf(Sign),
-			"verify":         js.FuncOf(Verify),
-			"createProof":    js.FuncOf(CreateProof),
-			"verifyProof":    js.FuncOf(VerifyProof),
+			"sign":            js.FuncOf(Sign),
+			"verify":          js.FuncOf(Verify),
+			"createProof":     js.FuncOf(CreateProof),
+			"verifyProof":     js.FuncOf(VerifyProof),
 		},
 	))
 }
@@ -60,9 +60,9 @@ func GenerateKeyPair(this js.Value, args []js.Value) interface{} {
 
 	// Return as JS object
 	return js.ValueOf(map[string]interface{}{
-		"success": true,
-		"privateKey": privKeyHex,
-		"publicKey": pubKeyHex,
+		"success":      true,
+		"privateKey":   privKeyHex,
+		"publicKey":    pubKeyHex,
 		"messageCount": messageCount,
 	})
 }
@@ -131,7 +131,7 @@ func Sign(this js.Value, args []js.Value) interface{} {
 
 	// Return as JS object
 	return js.ValueOf(map[string]interface{}{
-		"success": true,
+		"success":   true,
 		"signature": sigHex,
 	})
 }
@@ -193,15 +193,15 @@ func Verify(this js.Value, args []js.Value) interface{} {
 	if err != nil {
 		return js.ValueOf(map[string]interface{}{
 			"success": true,
-			"valid": false,
-			"error": err.Error(),
+			"valid":   false,
+			"error":   err.Error(),
 		})
 	}
 
 	// Return as JS object
 	return js.ValueOf(map[string]interface{}{
 		"success": true,
-		"valid": true,
+		"valid":   true,
 	})
 }
 
@@ -284,8 +284,8 @@ func CreateProof(this js.Value, args []js.Value) interface{} {
 
 	// Return as JS object
 	return js.ValueOf(map[string]interface{}{
-		"success": true,
-		"proof": proofHex,
+		"success":           true,
+		"proof":             proofHex,
 		"disclosedMessages": disclosedMsgsMap,
 	})
 }
@@ -328,24 +328,24 @@ func VerifyProof(this js.Value, args []js.Value) interface{} {
 
 	// Get keys from disclosedMessages object
 	keys := js.Global().Get("Object").Call("keys", disclosedMsgsJS)
-	
+
 	// Convert to map of index -> big.Int
 	disclosedMsgs := make(map[int]*big.Int)
 	for i := 0; i < keys.Length(); i++ {
 		key := keys.Index(i).String()
 		valueStr := disclosedMsgsJS.Get(key).String()
-		
+
 		// Parse index
 		index := 0
 		fmt.Sscanf(key, "%d", &index)
-		
+
 		// Parse value
 		value := new(big.Int)
 		_, ok := value.SetString(valueStr, 10)
 		if !ok {
 			return errorResponse(fmt.Sprintf("Invalid disclosed message value: %s", valueStr))
 		}
-		
+
 		disclosedMsgs[index] = value
 	}
 
@@ -353,15 +353,15 @@ func VerifyProof(this js.Value, args []js.Value) interface{} {
 	err = bbs.VerifyProof(pubKey, proof, disclosedMsgs, nil)
 	if err != nil {
 		return js.ValueOf(map[string]interface{}{
-			"success": true,
+			"success":  true,
 			"verified": false,
-			"error": err.Error(),
+			"error":    err.Error(),
 		})
 	}
 
 	// Return as JS object
 	return js.ValueOf(map[string]interface{}{
-		"success": true,
+		"success":  true,
 		"verified": true,
 	})
 }
@@ -370,6 +370,6 @@ func VerifyProof(this js.Value, args []js.Value) interface{} {
 func errorResponse(message string) interface{} {
 	return js.ValueOf(map[string]interface{}{
 		"success": false,
-		"error": message,
+		"error":   message,
 	})
 }

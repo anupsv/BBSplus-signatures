@@ -20,12 +20,12 @@ Replace imports from the original package with the new packages:
 
 **Original:**
 ```go
-import "github.com/asv/bbs/bbs"
+import "github.com/anupsv/bbsplus-signatures/bbs"
 ```
 
 **New:**
 ```go
-import "github.com/asv/bbs/pkg/core"
+import "github.com/anupsv/bbsplus-signatures/bbs/pkg/core"
 ```
 
 ### 2. Use the Compatibility Package (Optional)
@@ -33,7 +33,7 @@ import "github.com/asv/bbs/pkg/core"
 If you want to minimize changes during migration, you can use the compatibility package:
 
 ```go
-import "github.com/asv/bbs/pkg/bbscompat"
+import "github.com/anupsv/bbsplus-signatures/bbs/pkg/bbscompat"
 ```
 
 This package re-exports all the types and functions from the original package with the same names, making it easier to migrate gradually.
@@ -44,9 +44,9 @@ For new code or complete migration, use the specialized packages:
 
 ```go
 import (
-    "github.com/asv/bbs/pkg/core"       // Core BBS+ functionality
-    "github.com/asv/bbs/pkg/credential" // Credential management
-    "github.com/asv/bbs/pkg/proof"      // Proof operations
+    "github.com/anupsv/bbsplus-signatures/bbs/pkg/core"       // Core BBS+ functionality
+    "github.com/anupsv/bbsplus-signatures/bbs/pkg/credential" // Credential management
+    "github.com/anupsv/bbsplus-signatures/bbs/pkg/proof"      // Proof operations
 )
 ```
 
@@ -77,7 +77,7 @@ Here's a guide to which packages contain the functionality from the original pac
 package main
 
 import (
-    "github.com/asv/bbs/bbs"
+    "github.com/anupsv/bbsplus-signatures/bbs/bbs"
 )
 
 func main() {
@@ -93,7 +93,7 @@ func main() {
 package main
 
 import (
-    "github.com/asv/bbs/pkg/core"
+    "github.com/anupsv/bbsplus-signatures/bbs/pkg/core"
 )
 
 func main() {

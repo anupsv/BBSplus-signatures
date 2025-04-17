@@ -59,8 +59,8 @@ EOF
 # Update imports
 echo "Updating imports..."
 find pkg internal -name "*.go" -type f -exec sed -i'' \
-    -e 's,github.com/asv/bbs/bbs,github.com/asv/bbs/pkg/core,g' \
-    -e 's,import ",import "github.com/asv/bbs/internal/common\nimport ",g' \
+    -e 's,github.com/anupsv/bbsplus-signatures/bbs/bbs,github.com/anupsv/bbsplus-signatures/bbs/pkg/core,g' \
+    -e 's,import ",import "github.com/anupsv/bbsplus-signatures/bbs/internal/common\nimport ",g' \
     {} \;
 
 # Create migration helper
@@ -71,7 +71,7 @@ cat > pkg/bbscompat/compat.go << EOF
 package bbscompat
 
 import (
-	"github.com/asv/bbs/pkg/core"
+	"github.com/anupsv/bbsplus-signatures/bbs/pkg/core"
 )
 
 // Re-export types from core package
